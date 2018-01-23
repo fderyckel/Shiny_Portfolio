@@ -16,7 +16,7 @@ for (i in 1:nrow(av)){
   print(av$ticker[i])
   data = quantmod::getSymbols(Symbols = av$ticker[i],
                               src = "av",
-                              api.key = "W7SHG93NFG5YWE2K",
+                              api.key = "PUT YOUR OWN HERE :-) . ",
                               output.size = "full", 
                               from = startDate,
                               auto.assign = FALSE,
@@ -52,27 +52,6 @@ for (i in 1:nrow(options)){
 
 
 
-######################################################################
-## Yahoo for european etf
-######################################################################
-portfolio <- read_csv("~/Google Drive/Software/R projects/shinyapps/Portfolio/transaction.csv") 
-startDate = "2004-01-01"
-thePath = "~/Google Drive/Software/R projects/shinyapps/Portfolio/"
-
-yahoo <- portfolio %>% 
-  select(ticker, yahoo_ticker) %>% na.omit()
-
-for (i in 1:nrow(yahoo)){
-  print(yahoo$ticker[i])
-  data = quantmod::getSymbols(Symbols = yahoo$yahoo_ticker[i],
-                              src = "yahoo",
-                              from = startDate,
-                              auto.assign = FALSE,
-                              index.class="POSIXct")
-  colnames(data) = c("Open", "High", "Low", "Close", "Volume", "Adjusted")
-  zoo::write.zoo(data, paste0(thePath, "financial_data/", yahoo$ticker[i], ".csv"), 
-                 sep = ",", row.names = FALSE)
-}
 
 
 
