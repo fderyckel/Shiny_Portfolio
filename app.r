@@ -2,7 +2,7 @@ library(shinydashboard)
 library(tidyverse)
 library(lubridate)
 library(plotly)
-#library(here)
+
 
 thePath <- here::here()
 ######################################################################
@@ -33,7 +33,105 @@ avgPurchasePrice <- function(qty, transac_Price){
   avpr
 }
 
-# Function to get the current price of an instrument  
+# Function that create a df with all transactions and their average prices 
+# Then it returns the date of the first transaction (initial transaction) and 
+#last average price (in case of multiple purchases)
+make_avgPurchasePrice_df <- function(tickerss){
+  df <- transaction %>% 
+    select(ticker, purchase_date, quantity, price, commission, is_short) %>% 
+    arrange(purchase_date) %>% 
+    filter(ticker == tickerss & is_short != 1) %>% 
+    mutate(average_price = avgPurchasePrice(quantity, price), 
+           cum_sum = cumsum(quantity)) %>% 
+    select(-ticker)
+  
+  df <- finish_openposition_df(df)
+  return(df)
+}
+
+make_avgPurchasePrice_short_df <- function(tickerss){
+  df <- transaction %>% 
+    select(ticker, purchase_date, quantity, price, commission, is_short) %>% 
+    arrange(purchase_date) %>% 
+    filter(ticker == tickerss & is_short == 1) %>% 
+    mutate(average_price = avgPurchasePrice(-quantity, price), 
+           cum_sum = cumsum(quantity)) %>% 
+    select(-ticker)
+  
+  df <- finish_openposition_df(df)
+  return(df)
+}
+
+
+## This function take the average_price df and transform it in just 2 value
+## first purchase price and avg price
+finish_openposition_df <- function(df){ 
+  yo <- df %>% filter(cum_sum == 0)
+  yo <- df %>% filter(purchase_date > last(yo$purchase_date))
+  df <- tibble(first_purchase = if_else(nrow(yo) == 0, ymd(first(df$purchase_date)), ymd(first(yo$purchase_date))), 
+               avg_purchase_price = if_else(nrow(yo) == 0, last(df$average_price), last(yo$average_price)))
+  return(df)
+}
+
+## This furnction take the list of lists from the safely function on current_pr
+# and transform it into a proper df excluding the error message
+transform_current_pr <- function(df){
+  temp <- df$current_pr %>% map_dfr("result")
+  
+  if(nrow(temp)!=0){
+    is_ok <- df$current_pr %>% transpose()
+    is_ok <- is_ok$error %>% map_lgl(is_null)
+    temp <- bind_cols(df[is_ok, ] %>% select(ticker), temp)
+  } 
+  
+  else{
+    temp <- tibble(ticker = df$ticker, Date = NA, last_price = NA)
+  }
+  
+  df <- left_join(df %>% select(-current_pr), temp, by = "ticker")
+  return(df)
+}
+
+## This furnction take the list of lists from the safely function on find_higher/lower_price
+# and transform it into a proper df excluding the error message
+transform_high_low_price <- function(df){
+  temp <- df$high_low %>% map("result") %>% unlist() %>% as_tibble() 
+  
+  if(nrow(temp) != 0){
+    temp <- temp %>% select(high_low = value)
+    is_ok <- df$high_low %>% transpose()
+    is_ok <- is_ok$error %>% map_lgl(is_null)
+    temp <- bind_cols(df[is_ok, ] %>% select(ticker), temp)
+  } 
+  
+  else{
+    temp <- tibble(ticker = df$ticker, high_low = NA)
+  }
+  
+  df <- left_join(df %>% select(-high_low), temp, by = "ticker") 
+  return(df)
+}
+
+# Function to find the highest closing price since purchase date
+find_higher_price <- function(tickerss, date) {
+  df <- read_csv(paste0(thePath, "/financial_data/", tickerss, ".csv"))
+  df$Index <- ymd(df$Index) 
+  df <- df %>% filter(Index >= date)
+  yo <- max(df$Adjusted, na.rm = TRUE)
+  return(yo)
+}
+
+# Function to find the lowest closing price since purchase date
+find_lower_price <- function(tickerss, date) {
+  df <- read_csv(paste0(thePath, "/financial_data/", tickerss, ".csv"))
+  df$Index <- ymd(df$Index) 
+  df <- df %>% filter(Index >= date)
+  yo <- min(df$Adjusted, na.rm = TRUE)
+  return(yo)
+}
+
+# Function to get the last recorded price of an instrument.  
+# It will fetch from a stored .csv file
 get_last_price <- function(ticker){
   df <- read_csv(paste0(thePath, "/financial_data/", ticker, ".csv"))
   df$Index <- ymd(df$Index)
@@ -43,25 +141,8 @@ get_last_price <- function(ticker){
   return(df)
 }
 
-# Function that create a df with all transactions and their average prices 
-make_avgPurchasePrice_df <- function(tickerss){
-  df <- transaction %>% arrange(purchase_date) %>% 
-    select(ticker, purchase_date, quantity, price, commission, is_short) %>% 
-    filter(ticker == tickerss) %>% 
-    mutate(average_price = avgPurchasePrice(abs(quantity), price)) %>% 
-    select(-ticker)
-  return(df)
-}
 
-# Function to find the highest closing price since purchase date
-find_higher_price <- function(tickerss, date) {
-  df <- read_csv(paste0(thePath, "/financial_data/", tickerss, ".csv"))
-  df$Index <- ymd(df$Index)
-  df <- df %>% filter(Index >= date)
-  yo <- max(df$Adjusted, na.rm = TRUE)
-  return(yo)
-}
-
+######################################################################
 # Create the themes that are used in the main chart
 theme_chart_top <- theme(panel.background = element_rect(fill = "grey25", color = "black"), 
                          legend.position = c(0.265, 0.925), 
@@ -171,47 +252,45 @@ server <- function(input, output) {
       filter(instrument_type != "Forex" & instrument_type != "Dividend" & 
                instrument_type != "Fees" & instrument_type != "Equity")
     open_position <- transaction %>% arrange(purchase_date) %>% 
-      group_by(ticker) %>% 
+      group_by(ticker, is_short) %>% 
       summarize(currency = unique(currency), instrument_type = unique(instrument_type), 
                 position= sum(quantity)) %>%  
       ungroup() %>% 
-      filter(position != 0) %>% 
-      mutate(transactions = map(ticker, make_avgPurchasePrice_df), 
-             current_pr = map(ticker, safely(get_last_price))) %>% 
-      as_tibble()
+      filter(position != 0) 
     
-    temp <- open_position$current_pr %>% map_dfr("result")
-    is_ok <- open_position$current_pr %>% transpose()
-    is_ok <- is_ok$error %>% map_lgl(is_null)
-    temp <- bind_cols(open_position[is_ok, ] %>% select(ticker), temp)
-    open_position <- left_join(open_position %>% select(-current_pr), temp, by = "ticker") 
-    
-    temp <- open_position %>% 
-      select(ticker, transactions) %>% 
+    #for short position
+    ## TODO: differentiate for short put where we are looking for higher price for the underlying instrument
+    df1 <- open_position %>% filter(is_short == 1) %>% 
+      mutate(avg_price = map(ticker, make_avgPurchasePrice_short_df)) %>% 
       unnest() %>% 
-      group_by(ticker) %>% 
-      summarize(average_price = last(average_price), 
-                first_date = first(purchase_date)) %>% 
-      mutate(average_price = round(average_price, 2), 
-             higher_price = map2(ticker, first_date, safely(find_higher_price))) %>% 
-      select(-first_date)
+      mutate(current_pr = map(ticker, safely(get_last_price))) %>% 
+      transform_current_pr() %>% 
+      mutate(high_low = map2(ticker, first_purchase, safely(find_lower_price))) %>% 
+      transform_high_low_price()
     
-    yo <- temp$higher_price %>% map("result") %>% unlist() %>% as_tibble() %>% select(highest_price = value)
-    is_ok <- temp$higher_price %>% transpose()
-    is_ok <- is_ok$error %>% map_lgl(is_null)
-    yo <- bind_cols(temp[is_ok, ] %>% select(ticker), yo)
-    temp <- left_join(temp %>% select(-higher_price), yo, by = "ticker") 
     
-    open_position <- left_join(open_position %>% select(-transactions), temp, by = "ticker") %>% 
-      mutate(profit_percent = round(((last_price / average_price) - 1)* 100, 2), 
-             profit_base = round((last_price - average_price) * position, 2), 
-             percent_from_high = round(((last_price / highest_price) - 1) * 100, 2))
+    #for long position
+    ## TODO: differentiate for long put where we are looking for lower price for the undelying instrument
+    df2 <- open_position %>% filter(is_short != 1) %>% 
+      mutate(avg_price = map(ticker, make_avgPurchasePrice_df)) %>% 
+      unnest() %>% 
+      mutate(current_pr = map(ticker, safely(get_last_price))) %>% 
+      transform_current_pr() %>% 
+      mutate(high_low = map2(ticker, first_purchase, safely(find_higher_price))) %>% 
+      transform_high_low_price()
+    
+    open_position <- bind_rows(df1, df2) %>% 
+      mutate(profit_percent = round(((last_price / avg_purchase_price) - 1)* 100, 2), 
+             profit_base = round((last_price - avg_purchase_price) * position, 2), 
+             percent_from_high = round(((last_price / high_low) - 1) * 100, 2), 
+             avg_purchase_price = round(avg_purchase_price, 2))
+    
     
     open_position <- open_position %>% 
-      select(Ticker = ticker, Currency = currency, `Instr. \ Type` = instrument_type, 
-                                                Position = position, `Average Price` = average_price,  
-                                                `Current \ Price` = last_price, `Profit \ Percent` = profit_percent, 
-                                                `Profit \ Base` = profit_base, `Percent \ from High` = percent_from_high)
+      select(Ticker = ticker, Currency = currency, `Instr. \ Type` = instrument_type, `is \ short` = is_short, 
+             Position = position, `Inital \ position \ date` = first_purchase,  `Average Price` = avg_purchase_price,  
+             `Last \ price \ date` = Date, `Current \ Price` = last_price, `Profit \ Percent` = profit_percent, 
+             `Profit \ Base` = profit_base, `Percent \ from High` = percent_from_high)
     
     open_position
   })
