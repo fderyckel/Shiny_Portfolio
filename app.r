@@ -5,142 +5,8 @@ library(plotly)
 
 
 thePath <- here::here()
-######################################################################
-## Main functions and themes
-######################################################################
 
-# Function to calculate the average price of an instrument in case of several purchases
-avgPurchasePrice <- function(qty, transac_Price){
-  tot_value <- vector(mode="numeric", length = length(qty))
-  tot_qty <- vector(mode = "numeric", length = length(qty))
-  ap = 0
-  q = 0
-  avpr=vector()
-  for(i in 1:length(qty)){
-    if(qty[i]>0){
-      tot_value[i] <- qty[i] * transac_Price[i] + ap * q 
-      tot_qty[i] <- qty[i] + q 
-      avpr[i] <- tot_value[i] / tot_qty[i]
-      ap <- avpr[i]
-      q <- tot_qty[i]
-    } else {
-      tot_qty[i] <- qty[i] + q 
-      avpr[i] <- avpr[i-1]
-      ap <- avpr[i]         
-      q <- tot_qty[i]                                                              
-      tot_value <- avpr[i] * tot_qty[i]
-    }}
-  avpr
-}
-
-# Function that create a df with all transactions and their average prices 
-# Then it returns the date of the first transaction (initial transaction) and 
-#last average price (in case of multiple purchases)
-make_avgPurchasePrice_df <- function(tickerss){
-  df <- transaction %>% 
-    select(ticker, purchase_date, quantity, price, commission, is_short) %>% 
-    arrange(purchase_date) %>% 
-    filter(ticker == tickerss & is_short != 1) %>% 
-    mutate(average_price = avgPurchasePrice(quantity, price), 
-           cum_sum = cumsum(quantity)) %>% 
-    select(-ticker)
-  
-  df <- finish_openposition_df(df)
-  return(df)
-}
-
-make_avgPurchasePrice_short_df <- function(tickerss){
-  df <- transaction %>% 
-    select(ticker, purchase_date, quantity, price, commission, is_short) %>% 
-    arrange(purchase_date) %>% 
-    filter(ticker == tickerss & is_short == 1) %>% 
-    mutate(average_price = avgPurchasePrice(-quantity, price), 
-           cum_sum = cumsum(quantity)) %>% 
-    select(-ticker)
-  
-  df <- finish_openposition_df(df)
-  return(df)
-}
-
-
-## This function take the average_price df and transform it in just 2 value
-## first purchase price and avg price
-finish_openposition_df <- function(df){ 
-  yo <- df %>% filter(cum_sum == 0)
-  yo <- df %>% filter(purchase_date > last(yo$purchase_date))
-  df <- tibble(first_purchase = if_else(nrow(yo) == 0, ymd(first(df$purchase_date)), ymd(first(yo$purchase_date))), 
-               avg_purchase_price = if_else(nrow(yo) == 0, last(df$average_price), last(yo$average_price)))
-  return(df)
-}
-
-## This furnction take the list of lists from the safely function on current_pr
-# and transform it into a proper df excluding the error message
-transform_current_pr <- function(df){
-  temp <- df$current_pr %>% map_dfr("result")
-  
-  if(nrow(temp)!=0){
-    is_ok <- df$current_pr %>% transpose()
-    is_ok <- is_ok$error %>% map_lgl(is_null)
-    temp <- bind_cols(df[is_ok, ] %>% select(ticker), temp)
-  } 
-  
-  else{
-    temp <- tibble(ticker = df$ticker, Date = NA, last_price = NA)
-  }
-  
-  df <- left_join(df %>% select(-current_pr), temp, by = "ticker")
-  return(df)
-}
-
-## This furnction take the list of lists from the safely function on find_higher/lower_price
-# and transform it into a proper df excluding the error message
-transform_high_low_price <- function(df){
-  temp <- df$high_low %>% map("result") %>% unlist() %>% as_tibble() 
-  
-  if(nrow(temp) != 0){
-    temp <- temp %>% select(high_low = value)
-    is_ok <- df$high_low %>% transpose()
-    is_ok <- is_ok$error %>% map_lgl(is_null)
-    temp <- bind_cols(df[is_ok, ] %>% select(ticker), temp)
-  } 
-  
-  else{
-    temp <- tibble(ticker = df$ticker, high_low = NA)
-  }
-  
-  df <- left_join(df %>% select(-high_low), temp, by = "ticker") 
-  return(df)
-}
-
-# Function to find the highest closing price since purchase date
-find_higher_price <- function(tickerss, date) {
-  df <- read_csv(paste0(thePath, "/financial_data/", tickerss, ".csv"))
-  df$Index <- ymd(df$Index) 
-  df <- df %>% filter(Index >= date)
-  yo <- max(df$Adjusted, na.rm = TRUE)
-  return(yo)
-}
-
-# Function to find the lowest closing price since purchase date
-find_lower_price <- function(tickerss, date) {
-  df <- read_csv(paste0(thePath, "/financial_data/", tickerss, ".csv"))
-  df$Index <- ymd(df$Index) 
-  df <- df %>% filter(Index >= date)
-  yo <- min(df$Adjusted, na.rm = TRUE)
-  return(yo)
-}
-
-# Function to get the last recorded price of an instrument.  
-# It will fetch from a stored .csv file
-get_last_price <- function(ticker){
-  df <- read_csv(paste0(thePath, "/financial_data/", ticker, ".csv"))
-  df$Index <- ymd(df$Index)
-  df <- df %>% as_tibble() %>% 
-    select(Index, Adjusted) %>% arrange(Index) %>% 
-    rename(Date = Index, last_price = Adjusted) %>% tail(., 1)
-  return(df)
-}
-
+source('global.R', local = TRUE)
 
 ######################################################################
 # Create the themes that are used in the main chart
@@ -173,8 +39,8 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Transactions", tabName = "summary", icon = icon("dashboard"), selected = TRUE), 
     menuItem("Instruments", tabName = "finan_instru", icon = icon("area-chart")),  
-    menuItem("Alerts", tabName = "alerts", icon = icon("calendar")), 
-    menuItem("Cash Position", tabName = "cash", icon = icon("money"))))
+    menuItem("Cash Position", tabName = "cash", icon = icon("money")), 
+    menuItem("Alerts", tabName = "alerts", icon = icon("calendar"))))
 
 body <- dashboardBody(
   tabItems(
@@ -186,29 +52,14 @@ body <- dashboardBody(
               valueBox(12*3.1, "% Change since Inceptin")), 
             
             fluidRow(
-              column(width = 9, 
+              column(width = 12, 
                      tabBox(title = "Summary", width = NULL,  selected = "Open positions", 
-                            tabPanel(title = "Open positions", width = NULL, status = "primary", 
-                                     dataTableOutput('tbl_open_position')), 
-                            tabPanel(title = "Close positions", width = NULL, status = "sucess"), 
+                            tabPanel(title = "Open positions", status = "primary", 
+                                     dataTableOutput('tbl_open_position'), width = 9), 
+                            tabPanel(title = "Closed positions", width = NULL, status = "sucess", 
+                                     dataTableOutput('tbl_closed_position')), 
                             tabPanel(title = "Transactions", status = "warning")
-                            )), 
-              
-              column(width = 3, 
-                     box(title = "Transactions", width = NULL, 
-                         solidHeader = TRUE, status = "warning", 
-                         dateInput("transaction_date", "Date of transaction", 
-                                   format = "yyyy-mm-dd", weekstart = 1), 
-                         selectInput("currency", "Currency", c("EUR", "USD", "CAD")), 
-                         selectInput("type_transaction", "Type of transaction", c("ETF", "Stock", "Options", "Dividend", 
-                                                                                  "Fees", "Forex", "Equity")), 
-                         textInput("id_finan_instru", "Ticker"), 
-                         numericInput("quantity", "Quantity", 0), 
-                         numericInput("price", "Price", 0), 
-                         numericInput("commission", "Commission fee", 14.95), 
-                         selectInput("portfolio_id", "Choose your portfolio", c("BestBroker", "IbBrokers", "Others")), 
-                         actionButton("submit", "Submit", class = "btn-primary")
-                         ))
+                            ))
             )), 
     
     #For the financial instrument page 
@@ -229,7 +80,27 @@ body <- dashboardBody(
                          dateRangeInput("date_range", 
                                         label = "Date Range", 
                                         start = Sys.Date() - 352, end = Sys.Date())))
-           ))
+           )), 
+    
+    #For the cash position page 
+    tabItem(tabName = "cash", 
+            fluidRow(
+              column(width = 9, 
+                     
+                     #The main grah of prices
+                     box(title = "Cash Positions", width = NULL, status = "primary", 
+                         dataTableOutput("cash_positions")), 
+                     box(title = "box2_cash", width = NULL)), 
+              
+              #The input boxe where to choose dates, financial instrument, etc. 
+              column(width = 3, 
+                     box(title = "Input", width = NULL, status = "warning", solidHeader = TRUE, 
+                         uiOutput("pick_portfolio_cash"), 
+                         dateRangeInput("date_range_cash", 
+                                        label = "Date Range", 
+                                        start = Sys.Date() - 30, end = Sys.Date())))
+            ))
+    
     ))
 
 ui <- dashboardPage(header, sidebar, body)
@@ -242,50 +113,11 @@ ui <- dashboardPage(header, sidebar, body)
 ######################################################################
 server <- function(input, output) { 
   
-  transaction <- read_csv(here::here("transaction.csv"))
-  transaction$purchase_date <- dmy(transaction$purchase_date)
-  
-  # First tab "summary", make the summary of open position
+  ##########
+  # First tab "summary", make the summary of open positions
+  ##########
   output$tbl_open_position <- renderDataTable({
     # Open Position table
-    transaction <- transaction %>% 
-      filter(instrument_type != "Forex" & instrument_type != "Dividend" & 
-               instrument_type != "Fees" & instrument_type != "Equity")
-    open_position <- transaction %>% arrange(purchase_date) %>% 
-      group_by(ticker, is_short) %>% 
-      summarize(currency = unique(currency), instrument_type = unique(instrument_type), 
-                position= sum(quantity)) %>%  
-      ungroup() %>% 
-      filter(position != 0) 
-    
-    #for short position
-    ## TODO: differentiate for short put where we are looking for higher price for the underlying instrument
-    df1 <- open_position %>% filter(is_short == 1) %>% 
-      mutate(avg_price = map(ticker, make_avgPurchasePrice_short_df)) %>% 
-      unnest() %>% 
-      mutate(current_pr = map(ticker, safely(get_last_price))) %>% 
-      transform_current_pr() %>% 
-      mutate(high_low = map2(ticker, first_purchase, safely(find_lower_price))) %>% 
-      transform_high_low_price()
-    
-    
-    #for long position
-    ## TODO: differentiate for long put where we are looking for lower price for the undelying instrument
-    df2 <- open_position %>% filter(is_short != 1) %>% 
-      mutate(avg_price = map(ticker, make_avgPurchasePrice_df)) %>% 
-      unnest() %>% 
-      mutate(current_pr = map(ticker, safely(get_last_price))) %>% 
-      transform_current_pr() %>% 
-      mutate(high_low = map2(ticker, first_purchase, safely(find_higher_price))) %>% 
-      transform_high_low_price()
-    
-    open_position <- bind_rows(df1, df2) %>% 
-      mutate(profit_percent = round(((last_price / avg_purchase_price) - 1)* 100, 2), 
-             profit_base = round((last_price - avg_purchase_price) * position, 2), 
-             percent_from_high = round(((last_price / high_low) - 1) * 100, 2), 
-             avg_purchase_price = round(avg_purchase_price, 2))
-    
-    
     open_position <- open_position %>% 
       select(Ticker = ticker, Currency = currency, `Instr. \ Type` = instrument_type, `is \ short` = is_short, 
              Position = position, `Inital \ position \ date` = first_purchase,  `Average Price` = avg_purchase_price,  
@@ -293,15 +125,22 @@ server <- function(input, output) {
              `Profit \ Base` = profit_base, `Percent \ from High` = percent_from_high)
     
     open_position
-  })
+  },options = list(filter = 'top', scrollX = TRUE, pageLength = 10))
+
   
+  output$tbl_closed_position <- renderDataTable({
+    closed_position <- closed_position %>% 
+      select(Ticker = ticker, Currency = currency, `Instr. \ Type` = instrument_type, `is \ short` = is_short, 
+             Quantity = quantity, Date = date,  `Average Price` = average_price,  
+             Price = price, `Profit` = profit, `Profit \ Percent` = profit_percent)
+    
+    closed_position
+  })
+    
   # Second tab "financial Instrument", UI Pick the financial instrument to graph
   output$pick_portfolio <- renderUI({
     open_position <- transaction %>% 
-      filter(instrument_type == "Options" | instrument_type == "ETF" | instrument_type == "Stock") %>% 
-      group_by(ticker, portfolio) %>% 
-      summarize(position= sum(quantity)) %>%  
-      filter(position != 0)
+      filter(instrument_type == "Options" | instrument_type == "ETF" | instrument_type == "Stock")
     
     selectInput("portfolio_to_choose", "Portfolio", as.list(unique(open_position$portfolio)))
   })
@@ -311,9 +150,10 @@ server <- function(input, output) {
       filter(instrument_type == "Options" | instrument_type == "ETF" | instrument_type == "Stock") %>% 
       filter(portfolio == input$portfolio_to_choose) %>% 
       group_by(ticker, portfolio) %>% 
-      summarize(position= sum(quantity)) %>%  
-      filter(position != 0) %>% 
-      mutate(tickerb = str_replace(ticker, "\ .*", ""))
+      #summarize(position= sum(quantity)) %>%  
+      filter(transaction_date >= today() - 200) %>% 
+      mutate(tickerb = str_replace(ticker, "\ .*", "")) %>% 
+      arrange(tickerb)
     
     selectInput("instru_to_graph", "Pick your instrument", as.list(unique(open_position$tickerb)))
   })
@@ -362,7 +202,61 @@ server <- function(input, output) {
              plot_bgcolor = "rgb(210,210,210)", 
              showlegend = FALSE, height = 530)
   })
+  
+  # Third tab about "cash Position" 
+  output$pick_portfolio_cash <- renderUI({
+    selectInput("portfolio_to_choose_cash", "Portfolio", as.list(unique(cash$portfolio)))
+  })
+  
+  output$cash_positions <- renderDataTable({
+    ## Create the opening positions
+    opening_A <- cash %>% filter(transaction_date < input$date_range_cash[1] & 
+                                   portfolio == input$portfolio_to_choose_cash) %>% 
+      group_by(currency, instrument_type) %>% 
+      summarize(amount = sum(amount), 
+                commission = sum(commission)) 
+    opening_B <- cash %>% 
+      filter(transaction_date < input$date_range_cash[1] & 
+               portfolio == input$portfolio_to_choose_cash) %>% 
+      adding_forex(.)
+    opening <- bind_rows(opening_A, opening_B) %>% 
+      group_by(currency) %>% 
+      summarize(total = sum(amount) - sum(commission)) %>% 
+      spread(key = currency, value = total) %>% 
+      mutate(instrument_type = "Opening Cash")
+    
+    ## Create the closing positions
+    closing_A <- cash %>% filter(transaction_date >= input$date_range_cash[1] & 
+                                   transaction_date < input$date_range_cash[2] & 
+                                   portfolio == input$portfolio_to_choose_cash) %>% 
+      group_by(currency, instrument_type) %>% 
+      summarize(amount = sum(amount), 
+                commission = sum(commission)) 
+    closing_B <- cash %>% filter(transaction_date >= input$date_range_cash[1] & 
+                                   transaction_date < input$date_range_cash[2] & 
+                                   portfolio == input$portfolio_to_choose_cash) %>% 
+      adding_forex(.)
+    closing <- bind_rows(closing_A, closing_B) %>% ungroup() %>% 
+      select(-portfolio)
+    
+    temp_com <- closing %>% group_by(currency) %>% 
+      summarize(amount = -sum(commission)) %>% 
+      mutate(instrument_type = "Commission") 
+    
+    temp <- bind_rows(closing, temp_com) %>% select(-commission) %>% 
+      spread(key = currency, value = amount)
+    
+    temp1 <- bind_rows(opening, temp) %>% select(instrument_type, everything())
+    
+    temp2 <- temp1[,-1] %>%
+      replace(is.na(.), 0) %>%
+      summarise_all(funs(sum)) %>% mutate(instrument_type = "Closing cash")
+    temp3 <- bind_rows(temp1, temp2)
+    temp3
+  })
+  
   }
+
 
 
 ######################################################################
