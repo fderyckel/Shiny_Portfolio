@@ -1,9 +1,7 @@
 library(tidyverse)
 
-portfolio <- read_csv("transaction.csv")
-
-startDate = "2004-01-01"
-
+thePath <- here::here()
+portfolio <- read_csv(here::here("transaction.csv"))
 
 ######################################################################
 ## Alpha Vantage for Stocks from American Exchange  
@@ -18,11 +16,10 @@ for (i in 1:nrow(av)){
                               src = "av",
                               api.key = "PUT YOUR OWN KEY HERE ;-) ",
                               output.size = "full", 
-                              from = startDate,
                               auto.assign = FALSE,
                               index.class="POSIXct")
   colnames(data) = c("Open", "High", "Low", "Adjusted", "Volume")
-  zoo::write.zoo(data, paste0("financial_data/", av$tickerb[i], ".csv"), 
+  zoo::write.zoo(data, paste0(thePath, "/financial_data/", av$tickerb[i], ".csv"), 
                  sep = ",", row.names = FALSE)
 }
 
@@ -38,10 +35,9 @@ for (i in 1:nrow(options)){
                               src = "av",
                               api.key = "PUT YOUR OWN KEY HERE ;-) ",
                               output.size = "full", 
-                              from = startDate,
                               auto.assign = FALSE,
                               index.class="POSIXct")
   colnames(data) = c("Open", "High", "Low", "Adjusted", "Volume")
-  zoo::write.zoo(data, paste0("financial_data/", options$ticker[i], ".csv"), 
+  zoo::write.zoo(data, paste0(thePath, "/financial_data/", options$ticker[i], ".csv"), 
                  sep = ",", row.names = FALSE)
 }
