@@ -1,8 +1,6 @@
 library(tidyverse)
 library(lubridate)
 
-
-
 thePath <- here::here()
 
 transaction <- read_csv(here::here("transaction.csv"))
@@ -124,6 +122,27 @@ transform_high_low_price <- function(df){
   return(df)
 }
 
+
+## This furnction take the list of lists from the safely function on compute_ret_vola
+# and transform it into a proper df excluding the error message
+transform_compute_return <- function(df){
+  temp <- df$high_low %>% map("result") %>% unlist() %>% as_tibble() 
+  
+  if(nrow(temp) != 0){
+    temp <- temp %>% select(high_low = value)
+    is_ok <- df$high_low %>% transpose()
+    is_ok <- is_ok$error %>% map_lgl(is_null)
+    temp <- bind_cols(df[is_ok, ] %>% select(ticker), temp)
+  } 
+  
+  else{
+    temp <- tibble(ticker = df$ticker, high_low = NA)
+  }
+  
+  df <- left_join(df %>% select(-high_low), temp, by = "ticker") 
+  return(df)
+}
+
 # Function to find the highest closing price since purchase date
 find_higher_price <- function(tickerss, date) {
   df <- read_csv(paste0(thePath, "/financial_data/", tickerss, ".csv"))
@@ -169,6 +188,27 @@ adding_forex <- function(df){
   return(forex)
 }
 
+
+## Functions used in the instrument report
+######################################################################
+compute_return <- function(tickers, 
+                          thePath = paste0(thepath, "/financial_data/")) {
+  df <- read_csv(paste0(thePath, tickers, ".csv"))
+  df <- df %>% as_tibble() %>% select(Index, Adjusted)
+  df$Index <- ymd(df$Index)
+  df <- df %>% mutate(ret_1W = round(log(Adjusted / lag(Adjusted, 5)), 3) * 100, 
+                      ret_1M = round(log(Adjusted / lag(Adjusted, 21)), 3) * 100, 
+                      ret_3M = round(log(Adjusted / lag(Adjusted, 63)), 3) * 100, 
+                      ret_6M = round(log(Adjusted / lag(Adjusted, 126)), 3) * 100, 
+                      ret_12M = round(log(Adjusted / lag(Adjusted, 256)), 3) * 100, 
+                      ret_1d = log(Adjusted / lag(Adjusted)), 
+                      sharp_Ratio21 = round(RollingWindow::RollingMean(ret_1d, window = 21, na_method = "ignore") / 
+                                            RollingWindow::RollingStd(ret_1d, window = 21, na_method = "ignore"), 3), 
+                      sharp_Ratio63 = round(RollingWindow::RollingMean(ret_1d, window = 63, na_method = "ignore") / 
+                                            RollingWindow::RollingStd(ret_1d, window = 63, na_method = "ignore"), 3))
+  df <- df %>% select(-Adjusted, -ret_1d)
+  return(df)
+}
 
 ######################################################################
 ## Main DATAFRAMES
@@ -254,4 +294,12 @@ cash <- cash_transaction %>%
                             instrument_type == "Options" ~ -(quantity * price)), 
          transaction_date = cash_transaction$transaction_date) 
 
+
+########## returns & volatility ##########
+######################################################################
+
+ret_vola_df <- open_position %>% select(ticker, is_short, position, avg_purchase_price, last_price) %>% 
+  mutate(init_value = position * avg_purchase_price, 
+         current_value = position * last_price, 
+         yooo = map(ticker, safely(compute_return)))
 
