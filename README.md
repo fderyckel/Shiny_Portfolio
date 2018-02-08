@@ -18,7 +18,7 @@ At the moment, you can have
 HOWTO run the program
 1.  Create a new folder call it whatever like "my_portfolio".  
 2.  Make your own "transaction.csv" file with your own instruments.  Put that file in your "my_portfolio" folder.  
-3.  Create a folder "financial_data" where all the historical data of your instrument will be stored
+3.  Create a folder "financial_data" where all the historical data of your instrument will be stored.  You can use the [get_date.R](https://github.com/fderyckel/Shiny_Portfolio/blob/master/get_data.r) file to do so.  
 5.  Make sure you have all the essential libraries installed on your machine: tidyverse, quantmod, TTR, lubridate, plotly, shinydashboard, (and to come: [RollingWindows](https://github.com/andrewuhl/RollingWindow)
 4. Put the get_data.r file in your "my_portfolio" folder and run the script.  Read the [quantmod](https://github.com/joshuaulrich/quantmod) doc to adapt the script to your particular case using Yahoo, Google or Alphavantage.  
 5. Now you can run app.r file ;-) 
