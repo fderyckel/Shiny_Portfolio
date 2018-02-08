@@ -1,31 +1,12 @@
 library(shinydashboard)
 library(tidyverse)
 library(lubridate)
+library(RollingWindow)
 library(plotly)
-
 
 thePath <- here::here()
 
 source('global.R', local = TRUE)
-
-######################################################################
-# Create the themes that are used in the main chart
-theme_chart_top <- theme(panel.background = element_rect(fill = "grey25", color = "black"), 
-                         legend.position = c(0.265, 0.925), 
-                         #legend.position = "top", 
-                         legend.direction = "horizontal", 
-                         legend.title = element_blank(), 
-                         axis.title.x = element_blank(), 
-                         axis.text.x = element_text(angle = 60, hjust = 1))
-
-theme_chart_bottom <- theme(panel.background = element_rect(fill = "grey85", color = "black"), 
-                            legend.position = c(0.045, 0.8), 
-                            legend.direction = "vertical", 
-                            legend.title = element_blank(), 
-                            axis.title.x = element_blank(), 
-                            axis.text.x = element_blank())
-
-
 
 
 ######################################################################
@@ -36,11 +17,19 @@ header <- dashboardHeader(
   )
 
 sidebar <- dashboardSidebar(
+  sidebarUserPanel('François de Ryckel', 
+                   image = "https://avatars3.githubusercontent.com/u/7240992?s=460&v=4"), 
   sidebarMenu(
     menuItem("Transactions", tabName = "summary", icon = icon("dashboard"), selected = TRUE), 
     menuItem("Instruments", tabName = "finan_instru", icon = icon("area-chart")),  
     menuItem("Cash Position", tabName = "cash", icon = icon("money")), 
-    menuItem("Alerts", tabName = "alerts", icon = icon("calendar"))))
+    menuItem("Alerts", tabName = "alerts", icon = icon("calendar"))), 
+  
+  dateRangeInput("date_range", 
+                 label = "Date Range", 
+                 start = Sys.Date() - 63, end = Sys.Date()), 
+  uiOutput("pick_portfolio"), 
+  uiOutput("pick_instrument"))
 
 body <- dashboardBody(
   tabItems(
@@ -58,49 +47,33 @@ body <- dashboardBody(
                                      dataTableOutput('tbl_open_position'), width = 9), 
                             tabPanel(title = "Closed positions", width = NULL, status = "sucess", 
                                      dataTableOutput('tbl_closed_position')), 
-                            tabPanel(title = "Transactions", status = "warning")
+                            tabPanel(title = "Transactions", status = "warning"), 
+                            tabPanel(title = "Returns, Volatility and Weights", width = NULL, 
+                                     dataTableOutput('tbl_financial_instru'))
                             ))
             )), 
     
     #For the financial instrument page 
     tabItem(tabName = "finan_instru", 
             fluidRow(
-              column(width = 9, 
-                     
+              column(width = 12, 
+                     tabBox(title = "Charts", width = NULL, selected = "Charting", 
                      #The main grah of prices
-                     box(title = "Charting", width = NULL, status = "primary", 
+                     tabPanel(title = "Charting", width = NULL, status = "primary", 
                          plotlyOutput("instrument_chart"), height = 600), 
-                     box(title = "box2", width = NULL)), 
-              
-              #The input boxe where to choose dates, financial instrument, etc. 
-              column(width = 3, 
-                     box(title = "Input", width = NULL, status = "warning", solidHeader = TRUE, 
-                         uiOutput("pick_portfolio"), 
-                         uiOutput("pick_instrument"), 
-                         dateRangeInput("date_range", 
-                                        label = "Date Range", 
-                                        start = Sys.Date() - 352, end = Sys.Date())))
+                     tabPanel(title = "Std from mean", width = NULL, plotlyOutput('instrument_chart_std'))))
            )), 
     
     #For the cash position page 
     tabItem(tabName = "cash", 
             fluidRow(
-              column(width = 9, 
+              column(width = 12, 
                      
                      #The main grah of prices
                      box(title = "Cash Positions", width = NULL, status = "primary", 
                          dataTableOutput("cash_positions")), 
-                     box(title = "box2_cash", width = NULL)), 
-              
-              #The input boxe where to choose dates, financial instrument, etc. 
-              column(width = 3, 
-                     box(title = "Input", width = NULL, status = "warning", solidHeader = TRUE, 
-                         uiOutput("pick_portfolio_cash"), 
-                         dateRangeInput("date_range_cash", 
-                                        label = "Date Range", 
-                                        start = Sys.Date() - 30, end = Sys.Date())))
-            ))
-    
+                     box(title = "box2_cash", width = NULL))))
+  
     ))
 
 ui <- dashboardPage(header, sidebar, body)
@@ -146,7 +119,7 @@ server <- function(input, output) {
   })
   
   output$pick_instrument <- renderUI({
-    open_position <- transaction %>% 
+    df <- transaction %>% 
       filter(instrument_type == "Options" | instrument_type == "ETF" | instrument_type == "Stock") %>% 
       filter(portfolio == input$portfolio_to_choose) %>% 
       group_by(ticker, portfolio) %>% 
@@ -155,7 +128,7 @@ server <- function(input, output) {
       mutate(tickerb = str_replace(ticker, "\ .*", "")) %>% 
       arrange(tickerb)
     
-    selectInput("instru_to_graph", "Pick your instrument", as.list(unique(open_position$tickerb)))
+    selectInput("instru_to_graph", "Pick your instrument", as.list(unique(df$tickerb)))
   })
   
   # Second tab "financial Instrument", UI the main chart
@@ -173,18 +146,18 @@ server <- function(input, output) {
                                 sma50 = round(TTR::SMA(df_etf$Adjusted, n = 50), 2), 
                                 sma200 = round(TTR::SMA(df_etf$Adjusted, n = 200), 2), 
                                 ema9 = round(TTR::EMA(df_etf$Adjusted, n=9), 2)) %>% 
-      select(-Open, -High, -Low) %>% 
       filter(Index >= input$date_range[1] & Index <= input$date_range[2])
     
     ## Create first plot with adjusted price
-    p1 <- plot_ly(data = df_etf, name = "Adjusted Price", 
-                  x = ~Index, y = ~Adjusted, type = "scatter", mode = "lines", 
-                  line = list(color = "black", width = 4)) %>% 
-      add_trace(y = ~ema9, name = "EMA9", line = list(color = "rgb(230,39,28)", width = 2)) %>% 
-      add_trace(y = ~sma50, name = "SMA50", line = list(color = "rgb(79,174,66)", width = 2, dash = "dot")) %>% 
-      add_trace(y = ~sma200, name = "SMA200", line = list(color = "rgb(151,81, 165)", width = 2, dash = "dot")) %>% 
-      layout(xaxis = list(title = "Date"), 
-             yaxis = list(title = "Adjusted Prices"))
+    p1 <- plot_ly(data = df_etf, 
+                  x = ~Index, type = "candlestick", 
+                  open = ~Open, close = ~Adjusted, high = ~High, low = ~Low) %>% 
+      add_lines(x = ~Index, y = ~ema9, name = "EMA9", line = list(color = "rgb(230,39,28)", width = 2), inherit = F) %>% 
+      add_lines(x = ~Index, y = ~sma50, name = "SMA50", line = list(color = "rgb(79,174,66)", width = 2, dash = "dot"), inherit = F) %>% 
+      add_lines(x = ~Index, y = ~sma200, name = "SMA200", line = list(color = "rgb(151,81, 165)", width = 2, dash = "dot"), inherit = F) %>% 
+      layout(xaxis = list(title = "Date", rangeslider = list(visible = F)), 
+             yaxis = list(title = "Adjusted Prices", type = "log"), 
+             showlegend = FALSE)
     ## Create second plot
     p2 <- plot_ly(data = df_etf, name = "MACD_line", 
                   x = ~Index, y = ~MACD_line, type = "scatter", mode = "lines", 
@@ -198,26 +171,67 @@ server <- function(input, output) {
     
     ## Create a subplot of the above plots
     plotly::subplot(p1, p2, p3, nrows = 3, shareX=TRUE, heights = c(0.6, 0.2, 0.2)) %>% 
-      layout(xaxis = list(title = "Date"), 
+      layout(xaxis = list(title = "Date"), title = paste0("Chart of ", input$instru_to_graph), 
              plot_bgcolor = "rgb(210,210,210)", 
              showlegend = FALSE, height = 530)
   })
   
-  # Third tab about "cash Position" 
-  output$pick_portfolio_cash <- renderUI({
-    selectInput("portfolio_to_choose_cash", "Portfolio", as.list(unique(cash$portfolio)))
+  
+  output$instrument_chart_std <- renderPlotly({
+    df_etf <- read_csv(paste0(thePath, "/financial_data/",input$instru_to_graph , ".csv"))
+    df_etf$Index <- ymd(df_etf$Index)
+    ## Create RSI and MA, then filter for dates
+    df_etf <- df_etf %>% mutate(EMA9 = TTR::EMA(df_etf$Adjusted, n= 9), 
+                                SMA50 = TTR::SMA(df_etf$Adjusted, n = 50), 
+                                SMA200 = TTR::SMA(df_etf$Adjusted, n = 200))
+    
+    df_etf <- df_etf %>% 
+      mutate(EMA9 = Adjusted / EMA9 - 1, 
+             roll_sd_ema9 = RollingStd(EMA9, window = 54, na_method = "ignore"), 
+             roll_mean_ema9 = RollingMean(EMA9, window = 54, na_method = "ignore"), 
+             diff_sd_ema9 = round((EMA9 - roll_mean_ema9) / roll_sd_ema9, 2), 
+             SMA50 = Adjusted / SMA50 - 1, 
+             roll_sd_sma50 = RollingStd(SMA50, window = 300, na_method = "ignore"), 
+             roll_mean_sma50 = RollingMean(SMA50, window = 300, na_method = "ignore"), 
+             diff_sd_sma50 = round((SMA50 - roll_mean_sma50) / roll_sd_sma50, 2),  
+             SMA200 = Adjusted / SMA200 - 1,                      
+             roll_sd_sma200 = RollingStd(SMA200, window = 1200, na_method = "ignore"), 
+             roll_mean_sma200 = RollingMean(SMA200, window = 1200, na_method = "ignore"), 
+             diff_sd_sma200 = round((SMA200 - roll_mean_sma200) / roll_sd_sma200, 2))
+    
+    df_etfb <- df_etf %>% filter(Index >= input$date_range[1]) %>% 
+      select(Index, diff_sd_ema9, diff_sd_sma50, diff_sd_sma200) %>% 
+      mutate(ema9 = as.numeric(diff_sd_ema9), 
+             sma50 = as.numeric(diff_sd_sma50), 
+             sma200 = as.numeric(diff_sd_sma200))
+    
+    #  %>%   gather(key = "variable", value = "value", -Index) 
+    plot_ly(df_etfb, x = ~Index) %>% 
+      add_trace(y = ~ema9, name = "EMA9", mode = 'lines', line = list(color = "rgb(230,39,28)", width = 1)) %>% 
+      add_trace(y = ~sma50, name = "SMA50", mode = 'lines', line = list(color = "rgb(79,174,66)", width = 2)) %>% 
+      add_trace(y = ~sma200, name = "SMA200", mode = 'lines', line = list(color = "rgb(151,81, 165)", width = 2)) %>% 
+      layout(xaxis = list(title = "Date"), 
+             title = "How many std away is the MA from its latest mean", 
+             showlegend = FALSE)
   })
+  
+  
+  # Second tab about "instrument" - find returns and volatility
+  output$tbl_financial_instru <- renderDataTable({
+    
+  })
+  
   
   output$cash_positions <- renderDataTable({
     ## Create the opening positions
-    opening_A <- cash %>% filter(transaction_date < input$date_range_cash[1] & 
-                                   portfolio == input$portfolio_to_choose_cash) %>% 
+    opening_A <- cash %>% filter(transaction_date < input$date_range[1] & 
+                                   portfolio == input$portfolio_to_choose) %>% 
       group_by(currency, instrument_type) %>% 
       summarize(amount = sum(amount), 
                 commission = sum(commission)) 
     opening_B <- cash %>% 
-      filter(transaction_date < input$date_range_cash[1] & 
-               portfolio == input$portfolio_to_choose_cash) %>% 
+      filter(transaction_date < input$date_range[1] & 
+               portfolio == input$portfolio_to_choose) %>% 
       adding_forex(.)
     opening <- bind_rows(opening_A, opening_B) %>% 
       group_by(currency) %>% 
@@ -226,15 +240,15 @@ server <- function(input, output) {
       mutate(instrument_type = "Opening Cash")
     
     ## Create the closing positions
-    closing_A <- cash %>% filter(transaction_date >= input$date_range_cash[1] & 
-                                   transaction_date < input$date_range_cash[2] & 
-                                   portfolio == input$portfolio_to_choose_cash) %>% 
+    closing_A <- cash %>% filter(transaction_date >= input$date_range[1] & 
+                                   transaction_date < input$date_range[2] & 
+                                   portfolio == input$portfolio_to_choose) %>% 
       group_by(currency, instrument_type) %>% 
       summarize(amount = sum(amount), 
                 commission = sum(commission)) 
-    closing_B <- cash %>% filter(transaction_date >= input$date_range_cash[1] & 
-                                   transaction_date < input$date_range_cash[2] & 
-                                   portfolio == input$portfolio_to_choose_cash) %>% 
+    closing_B <- cash %>% filter(transaction_date >= input$date_range[1] & 
+                                   transaction_date < input$date_range[2] & 
+                                   portfolio == input$portfolio_to_choose) %>% 
       adding_forex(.)
     closing <- bind_rows(closing_A, closing_B) %>% ungroup() %>% 
       select(-portfolio)
