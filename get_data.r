@@ -17,7 +17,7 @@ for (i in 1:nrow(av)){
   print(av$ticker[i])
   data = quantmod::getSymbols(Symbols = av$ticker[i],
                               src = "av",
-                              api.key = "W7SHG93NFG5YWE2K",
+                              api.key = "WHAAAAAT?2K",
                               output.size = "full", 
                               auto.assign = FALSE,
                               index.class="POSIXct")
@@ -36,7 +36,7 @@ for (i in 1:nrow(options)){
   print(options$ticker[i])
   data = quantmod::getSymbols(Symbols = options$ticker[i],
                               src = "av",
-                              api.key = "W7SHG93NFG5YWE2K",
+                              api.key = "WHAAAAAAT?2K",
                               output.size = "full", 
                               auto.assign = FALSE,
                               index.class="POSIXct")
