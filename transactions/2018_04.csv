@@ -1,0 +1,12 @@
+ticker,currency,portfolio,quantity,transaction_date,price,commission,instrument_type,is_short,alpha_ticker,saved_as,geography,sector,group,industry
+EZA,USD,IB Brokers,100,2018-04-17,68.74,1,ETF,0,EZA,,South-Africa,,,
+EZA,USD,IB Brokers,-100,2018-05-15,65.051,1.16216781,ETF,0,EZA,,South-Africa,,,
+LUC,CAD,IB Brokers,1900,2018-04-05,2.02,19,Stock,0,LUC.TO,LUC,Canada,Basic Materials,,Diamond mining
+LUC,CAD,IB Brokers,2000,2018-04-13,2.07,20,Stock,0,LUC.TO,LUC,Canada,Basic Materials,,Diamond mining
+NSU,CAD,IB Brokers,-1000,2018-05-10,4.875,10,Stock,0,NSU.TO,NSU,Canada,Basic Materials,,Gold mining
+CANE,USD,IB Brokers,500,2018-05-01,7.73,2.5,Stock,0,CANE,CANE,,Soft Commodity,,
+CANE,USD,IB Brokers,500,2018-05-02,7.59,1.5,Stock,0,CANE,CANE,,Soft Commodity,,
+CHK,USD,IB Brokers,-2000,2018-05-23,4.63134,8.55841484,Stock,1,CHK,CHK,USA,Energy,,
+CHK,USD,IB Brokers,2000,2018-05-24,4.54613,9.5,Stock,1,CHK,CHK,USA,Energy,,
+HABT,USD,IB Brokers,1000,2018-04-23,9.3,4.9,Stock,0,HABT,HABT,USA,,,
+HABT,USD,IB Brokers,-1000,2018-04-27,9.9,4.34769,Stock,0,HABT,HABT,USA,,,

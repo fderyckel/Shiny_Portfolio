@@ -3,8 +3,10 @@ library(lubridate)
 
 thePath <- here::here()
 
-transaction <- read_csv(here::here("transaction.csv"))
-transaction$transaction_date <- dmy(transaction$transaction_date)
+transaction <- map_df(list.files(paste0(thePath, "/transactions"), pattern = "\\.csv", full.names=TRUE), 
+                      read_csv, col_names=TRUE) %>% 
+  select(1:15)
+#transaction$transaction_date <- dmy(transaction$transaction_date)
 
 cash_transaction <- transaction
 
@@ -271,12 +273,27 @@ closed_pos_short <- closed_position %>% filter(is_short == 1) %>%
 closed_position <- bind_rows(closed_pos_long, closed_pos_short) %>% 
   select(ticker, is_short, currency, instrument_type, 
          date = transaction_date, quantity, average_price, price) %>% 
-  mutate(profit = -quantity * (price - average_price), 
-         profit_percent = ((price / average_price) - 1) * -100) %>% 
+  mutate(profit = case_when(is_short == 1 ~ quantity * (average_price - price), 
+                            is_short == 0 ~ -quantity * (price - average_price)), 
+         profit_percent = case_when(is_short == 1 ~ ((price / average_price) - 1) * -100, 
+                                    is_short == 0 ~ ((price / average_price) - 1) * 100)) %>% 
   arrange(desc(date)) %>% 
   mutate(price = round(price, 2), 
          average_price = round(average_price, 2), 
-         profit = round(profit, 2), profit_percent = round(profit_percent, 2))
+         profit = round(profit, 2), 
+         profit_percent = round(profit_percent, 2))
+
+ytd_realized_profit <- closed_position %>% 
+  select(date, profit) %>% mutate(year = year(date)) %>% 
+  group_by(year) %>% summarize(realized_profit = sum(profit, na.rm = TRUE)) 
+  
+
+
+########## ALL TRANSACTIONS - POSITION ##########
+all_transactions <- cash_transaction %>% 
+  select(Ticker = ticker, Currency = currency, Quantity = quantity, Date = transaction_date, 
+         Price = price, Com = commission, Type = instrument_type, Short = is_short, 
+         Sector = sector, Group = group, Industry = industry, portfolio)
 
 
 ########## cash situations ##########

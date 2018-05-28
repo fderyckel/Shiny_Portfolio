@@ -1,0 +1,46 @@
+ticker,currency,portfolio,quantity,transaction_date,price,commission,instrument_type,is_short,alpha_ticker,saved_as,geography,sector,group,industry
+BBI,CAD,IB Brokers,8000,2018-03-12,0.375,15.6,Stock,0,BBI.V,BBI,Canada,Energy,,
+BBI,CAD,IB Brokers,9600,2018-03-21,0.38,29.6475,Stock,0,BBI.V,BBI,Canada,Energy,,
+EQX,CAD,IB Brokers,3200,2018-03-15,1.13,18.08,Stock,0,EQX.V,EQX,Canada,Basic Materials,,Gold mining
+EQX,CAD,IB Brokers,3200,2018-03-22,1.13,10.17,Stock,0,EQX.V,EQX,Canada,Basic Materials,,Gold mining
+LGD,CAD,IB Brokers,10500,2018-03-20,0.42,22.8375,Stock,0,LGD.TO,LGD,Canada,Basic Materials,,Gold mining
+LGD,CAD,IB Brokers,10500,2018-03-21,0.42,1,Stock,0,LGD.TO,LGD,Canada,Basic Materials,,Gold mining
+LUC,CAD,IB Brokers,2600,2018-03-06,2.18,26,Stock,0,LUC.TO,LUC,Canada,Basic Materials,,Diamond mining
+LUC,CAD,IB Brokers,2000,2018-03-22,2.11,20,Stock,0,LUC.TO,LUC,Canada,Basic Materials,,Diamond mining
+MGM,CAD,IB Brokers,8000,2018-03-22,0.235,10,Stock,0,MGM.V,MGM,Canada,Basic Materials,,Gold mining
+MGM,CAD,IB Brokers,3100,2018-03-23,0.235,3.88,Stock,0,MGM.V,MGM,Canada,Basic Materials,,Gold mining
+NSU,CAD,IB Brokers,1000,2018-03-13,3.11,10,Stock,0,NSU.TO,NSU,Canada,Basic Materials,,Gold mining
+COPX,USD,IB Brokers,200,2018-03-14,27.94,1,ETF,0,COPX,COPX,USA,Basic Materials,,Metals Mining
+GLW,USD,IB Brokers,-700,2018-03-20,29.24,4.0561108,Stock,0,GLW,GLW,China,Technology,Hardware Equipment,Electronic Equipment Instruments Components
+KBA,USD,IB Brokers,100,2018-03-07,35.745,1,ETF,0,KBA,KBA,China,,,
+BIB 20Apr18 P 57,USD,IB Brokers,300,2018-03-19,2.45,0.11,Options,1,BIB,BIB,USA,Healthcare,Pharmaceuticals Biotech,Biotechnology
+COF 23Mar18 C 95,USD,IB Brokers,-200,2018-03-05,2.85,0.99,Options,1,COF,COF,USA,,,
+COF 23Mar18 C 95,USD,IB Brokers,200,2018-03-09,6.07,0.98,Options,1,COF,COF,USA,,,
+COF 20Apr18 C 97.5,USD,IB Brokers,-200,2018-03-13,4.65,1,Options,1,COF,COF,USA,,,
+COF 20Apr18 C 97.5,USD,IB Brokers,200,2018-03-21,3.55,0.98,Options,1,COF,COF,USA,,,
+DDD 16Mar18 P 10,USD,IB Brokers,1000,2018-03-09,0.14,7.88,Options,1,DDD,DDD,USA,Tech,Hardware Equipment,Hardware Storage Peripherals
+DDD 23Mar18 C 13,USD,IB Brokers,-500,2018-03-05,0.52,2.46,Options,1,DDD,DDD,USA,Tech,Hardware Equipment,Hardware Storage Peripherals
+DDD 23Mar18 C 13,USD,IB Brokers,500,2018-03-15,0.53,2.44,Options,1,DDD,DDD,USA,Tech,Hardware Equipment,Hardware Storage Peripherals
+DLR 16Mar18 P 110,USD,IB Brokers,200,2018-03-13,5.7,1.58,Options,1,DLR,DLR,USA,Tech,Hardware Equipment,Hardware Storage Peripherals
+ESPR  16Mar18 P 75,USD,IB Brokers,100,2018-03-06,4.8,0.34,Options,1,ESPR,ESPR,USA,Healthcare,Pharmaceuticals Biotech,Biotechnology
+GE 20Apr18 P 15,USD,IB Brokers,-1000,2018-03-05,1.06,4.92,Options,1,GE,GE,USA,,,
+GE 20Apr18 P 15,USD,IB Brokers,1000,2018-03-10,0.86,4.88,Options,1,GE,GE,USA,,,
+LOCO 16Mar18 P 10,USD,IB Brokers,1000,2018-03-09,0.1,0.38,Options,1,LOCO,LOCO,USA,Consumer Discretionary,Consumer Services,Restaurants
+NFX,USD,IB Brokers,-300,2018-03-13,1.98,2.38,Options,1,NFX,NFX,USA,,,
+RGLD 20Apr18 P 82.5,USD,IB Brokers,200,2018-03-14,2.08,0.02,Options,1,RGLD,RGLD,USA,Basic Materials,Metals & Mining,Gold mining
+SPY 19Mar18 C 278,USD,IB Brokers,-200,2018-03-12,1.89,1.59,Options,1,SPY,SPY,USA,,,
+SPY 19Mar18 C 278,USD,IB Brokers,-200,2018-03-14,0.33,0.84,Options,1,SPY,SPY,USA,,,
+SPY 19Mar18 C 278,USD,IB Brokers,400,2018-03-15,0.34,1.67,Options,1,SPY,SPY,USA,,,
+SPY 23Mar18 C 269,USD,IB Brokers,-100,2018-03-06,5.12,0.73,Options,1,SPY,SPY,USA,,,
+SPY 23Mar18 C 269,USD,IB Brokers,100,2018-03-08,5.91,0.72,Options,1,SPY,SPY,USA,,,
+SPY 28Mar18 C 270,USD,IB Brokers,-200,2018-03-19,2.77,0.85,Options,1,SPY,SPY,USA,,,
+SPY 28Mar18 C 270,USD,IB Brokers,200,2018-03-21,3.47,2.32,Options,1,SPY,SPY,USA,,,
+WMT 18May18 P 87.5,USD,IB Brokers,200,2018-03-20,3.42,0.98,Options,0,WMT,WMT,USA,,,
+WMT 18May18 P 87.5,USD,IB Brokers,-200,2018-03-21,3.28,0.99,Options,0,WMT,WMT,USA,,,
+WMT 18May18 P 87.5,USD,IB Brokers,-200,2018-03-22,3.28,0.99,Options,1,WMT,WMT,USA,,,
+Fees,CAD,IB Brokers,1,2018-03-05,-0.16,,Fees,,,,,,,
+Fees,EUR,IB Brokers,1,2018-03-05,-0.15,,Fees,,,,,,,
+Fees,USD,IB Brokers,1,2018-03-05,-106.47,,Fees,,,,,,,
+Fees,USD,IB Brokers,1,2018-03-05,4.39,,Fees,,,,,,,
+ABX,USD,IB Brokers,1,2018-03-15,10.2,,Dividend,,,,,,,
+GLW,USD,IB Brokers,1,2018-03-29,88.2,,Dividend,,,,,,,

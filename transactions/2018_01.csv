@@ -1,0 +1,84 @@
+ticker,currency,portfolio,quantity,transaction_date,price,commission,instrument_type,is_short,alpha_ticker,saved_as,geography,sector,group,industry
+AEP 16Feb18 P 67.5,USD,IB Brokers,-500,2018-01-22,1.05,0.23,Options,1,AEP,AEP,USA,Utilities,Electric Utilities,
+AEP 16Feb18 P 67.5,USD,IB Brokers,500,2018-01-24,1.05,3.96,Options,1,AEP,AEP,USA,Utilities,Electric Utilities,
+AGI,USD,IB Brokers,500,2018-01-16,6.1793,2,Stock,0,AGI,AGI,Canada,Basic Materials,Metals & Mining,Gold mining
+ALLY 16Feb18 C 29,USD,IB Brokers,-300,2018-01-16,1.95,0.14,Options,1,ALLY,ALLY,USA,Financials,Banks,Thrift Mortgage Finance
+ALLY 16Feb18 C 29,USD,IB Brokers,300,2018-01-19,1.8,0.12,Options,1,ALLY,ALLY,USA,Financials,Banks,Thrift Mortgage Finance
+ALLY 16Feb18 C 29,USD,IB Brokers,-500,2018-01-23,1.49,3.98,Options,1,ALLY,ALLY,USA,Financials,Banks,Thrift Mortgage Finance
+AXP 16Feb18 P 97.5,USD,IB Brokers,-100,2018-01-23,1.54,1.1,Options,1,AXP,AXP,USA,Financials,Diversified Financials,Consumer Finance
+AXP 16Feb18 P 98.5,USD,IB Brokers,-100,2018-01-23,2.06,1.1,Options,1,AXP,AXP,USA,Financials,Diversified Financials,Consumer Finance
+BIB 19Jan18 P 56,USD,IB Brokers,200,2018-01-19,0,0,Options,1,BIB,BIB,USA,Healthcare,Pharmaceuticals Biotech,Biotechnology
+BIDU,USD,Keytrade,-21,2018-01-30,254.7,29.95,Stock,0,,BIDU,China,Tech,Software Services,
+BRE,EUR,Keytrade,86,2018-01-23,58.3,24.95,ETF,0,BRE.PA,BRE,Europe,Basic Materials,,
+CANE,USD,IB Brokers,50,2018-01-16,9.15,1,Stock,0,CANE,CANE,,Soft Commodity,,
+CANE,USD,IB Brokers,350,2018-01-16,9.16,1.4,Stock,0,CANE,CANE,,Soft Commodity,,
+CANE,USD,IB Brokers,400,2018-01-25,8.93,2,Stock,0,CANE,CANE,,Soft Commodity,,
+CAR 16Feb18 C 42,USD,IB Brokers,200,2018-01-18,2.9,0.08,Options,1,CAR,CAR,USA,Industrials,Transportation,Trucking
+CAR 19Jan18 P 27.5,USD,IB Brokers,-200,2018-01-19,0,0,Options,0,CAR,CAR,USA,Industrials,Transportation,Trucking
+CHIX,USD,Keytrade,1,2018-01-10,81.41,,Dividend,,CHIX,CHIX,China,Financials,,
+COF 18Jan19 P 90,USD,IB Brokers,100,2018-01-22,5.07,0.79,Options,0,COF,COF,,Financials,Diversified Financials,Consumer Finance
+COF 19Jan18 C 95,USD,IB Brokers,200,2018-01-18,9.11,0.98,Options,1,COF,COF,,Financials,Diversified Financials,Consumer Finance
+COF 26Jan18 C 105,USD,IB Brokers,-200,2018-01-16,2.53,1,Options,1,COF,COF,,Financials,Diversified Financials,Consumer Finance
+COF 26Jan18 C 105,USD,IB Brokers,200,2018-01-19,1.8,0.74,Options,1,COF,COF,,Financials,Diversified Financials,Consumer Finance
+COPX,USD,Keytrade,1,2018-01-10,71.73,,Dividend,,COPX,COPX,,Basic Materials,Metals & Mining,Industrial Metals
+DDD 16Mar18 P 10,USD,IB Brokers,1,2018-01-31,0,8.67,Fees,,DDD,DDD,USA,Tech,Hardware Equipment,Hardware Storage Peripherals
+DDD 16Mar18 P 10,USD,IB Brokers,-1000,2018-01-31,0.91,4.96,Options,1,DDD,DDD,USA,Tech,Hardware Equipment,Hardware Storage Peripherals
+DLR 16Mar18 P 110,USD,IB Brokers,-200,2018-01-25,3.5,0,Options,1,DLR,DLR,USA,Tech,Hardware Equipment,Hardware Storage Peripherals
+DUK 20Apr18 P 80,USD,IB Brokers,-200,2018-01-22,4.2,0.11,Options,1,DUK,DUK,,Utilities,Electric Utilities,
+DUK 20Apr18 P 80,USD,IB Brokers,200,2018-01-25,4,1.58,Options,1,DUK,DUK,USA,Utilities,Electric Utilities,
+DXJS,USD,IB Brokers,100,2018-01-26,47.36,1,ETF,0,DXJS,DXJS,Japan,,,
+ESPR,USD,Keytrade,-75,2018-01-25,81.35,29.95,Stock,0,ESPR,ESPR,USA,Healthcare,Pharmaceuticals Biotech,Biotechnology
+ESPR  16Mar18 P 75,USD,IB Brokers,-100,2018-01-25,10.2,0.37,Options,1,ESPR,ESPR,USA,Healthcare,Pharmaceuticals Biotech,Biotechnology
+ESRX 16Mar18 C 87.5,USD,IB Brokers,-500,2018-01-22,0.94,3.48,Options,1,ESRX,ESRX,USA,Healthcare,Equipment Services,Providers Services
+ESRX 16Mar18 C 87.5,USD,IB Brokers,500,2018-01-29,1.66,2.46,Options,1,ESRX,ESRX,USA,Healthcare,Equipment Services,Providers Services
+ESS,USD,IB Brokers,20,2018-01-23,229.76,1,Stock,0,ESS,ESS,USA,Financials,,REIT
+EUR,EUR,IB Brokers,100000,2018-01-18,1,0,Equity,,,,,,,
+Fees,USD,IB Brokers,1,2018-01-04,-0.18,,Fees,,,,,USD Net Short Interest Dec,,
+Fees,USD,IB Brokers,1,2018-01-31,-400,0,Fees,,,,,Adjustment Accounting,,
+Fees,USD,IB Brokers,1,2018-01-31,-0.07,0,Fees,,,,,Adjustment Accounting,,
+GE 26Jan18 P 17.5,USD,IB Brokers,500,2018-01-23,0.92,2.46,Options,1,GE,GE,USA,Industrials,Capital Goods,Industrial Conglomerate
+GE 2Feb18 P 17,USD,IB Brokers,-500,2018-01-19,0.96,3.98,Options,1,GE,GE,USA,Industrials,Capital Goods,Industrial Conglomerate
+GE 2Feb18 P 17,USD,IB Brokers,-500,2018-01-19,0.94,3.48,Options,1,GE,GE,USA,Industrials,Capital Goods,Industrial Conglomerate
+GE 2Feb18 P 17,USD,IB Brokers,1000,2018-01-24,0.62,7.42,Options,1,GE,GE,USA,Industrials,Capital Goods,Industrial Conglomerate
+GE 9Feb18 P 16,USD,IB Brokers,-1000,2018-01-22,0.47,7.95,Options,1,GE,GE,USA,Industrials,Capital Goods,Industrial Conglomerate
+GLW 2Feb18 P 33,USD,IB Brokers,-700,2018-01-24,0.42,3.46,Options,1,GLW,GLW,China,Technology,Hardware Equipment,Electronic Equipment Instruments Components
+ITI,USD,Keytrade,750,2018-01-31,6.6,29.95,Stock,0,ITI,ITI,USA,Technology,,
+IYR 16Feb18 P 78,USD,IB Brokers,-200,2018-01-16,1.35,0.85,Options,1,IYR,IYR,USA,Financials,Real Estate,
+IYR 16Feb18 P 78,USD,IB Brokers,200,2018-01-23,0.63,0.84,Options,1,IYR,IYR,USA,Financials,Real Estate,
+LOCO 16Mar18 P 10,USD,IB Brokers,-1000,2018-01-22,0.55,0.45,Options,1,LOCO,LOCO,USA,Consumer Discretionary,Consumer Services,Restaurants
+LOCO 16Mar18 P 11,USD,IB Brokers,-100,2018-01-23,1.06,1.1,Options,1,LOCO,LOCO,USA,Consumer Discretionary,Consumer Services,Restaurants
+LOCO 16Mar18 P 11,USD,IB Brokers,-400,2018-01-23,1.05,0.02,Options,1,LOCO,LOCO,USA,Consumer Discretionary,Consumer Services,Restaurants
+MAG,USD,IB Brokers,200,2018-01-16,12.2486,1,Stock,0,MAG,MAG,Mexico,Basic Materials,Metals & Mining,Gold mining
+MELI,USD,Keytrade,1,2018-01-17,2.17,,Dividend,,MELI,MELI,,,,
+MELI,USD,Keytrade,-17,2018-01-30,391.0525,29.95,Stock,0,,MELI,Brazil,,,
+MTCH 16Mar18 P 2.5,USD,IB Brokers,-200,2018-01-26,2.5,0.1,Options,1,MTCH,MTCH,USA,Technology,Softwares Services,Internet Software Services
+NIB,USD,IB Brokers,200,2018-01-17,24.32945,1,Stock,0,NIB,NIB,,Basic Materials,,Agricultural commodity
+NSU,CAD,IB Brokers,1000,2018-01-31,2.61,10,Stock,0,NSU.TO,NSU,Canada,Basic Materials,,Gold mining
+OBOR,USD,IB Brokers,200,2018-01-26,28.125,1,ETF,0,OBOR,OBOR,China,Industrials,,Materials
+RGLD 20Apr18 P 82.5,USD,IB Brokers,-200,2018-01-22,2.35,1.6,Options,1,RGLD,RGLD,USA,Basic Materials,Metals & Mining,Gold mining
+RUS,EUR,Keytrade,-175,2018-01-30,32.705,24.95,ETF,0,,,Russia,,,
+SAND,USD,IB Brokers,700,2018-01-25,5.4787714,2.8,Stock,0,SAND,SAND,Canada,Basic Materials,,Gold mining
+SBIO,USD,IB Brokers,1,2018-01-23,20,1.39,Fees,0,SBIO,SBIO,USA,Healthcare,Pharmaceuticals Biotech,Biotechnology
+SBIO 02Feb18 P 38,USD,IB Brokers,-100,2018-01-23,1.75,0.5,Options,1,SBIO,SBIO,USA,Healthcare,Pharmaceuticals Biotech,Biotechnology
+SLB,USD,IB Brokers,1,2018-01-02,50,,Dividend,,SLB,,,,,
+SLB 19Jan18 P 72.5,USD,IB Brokers,100,2018-01-19,0,0,Options,1,SLB,SLB,USA,Energy,Equipment Services,Oil Gas Equipment Services
+SLV 16Feb18 C 15.5,USD,IB Brokers,-1000,2018-01-23,0.63,12.15,Options,1,SLV,SLV,USA,Basic Materials,Metals & Mining,Gold mining
+SLV 16Feb18 C 15.5,USD,IB Brokers,1000,2018-01-23,1,7.92,Options,1,SLV,SLV,USA,Basic Materials,Metals & Mining,Gold mining
+SLV 19Jav18 C 18,USD,IB Brokers,-5000,2018-01-19,0,0,Options,0,SLV,SLV,USA,Basic Materials,Metals & Mining,Gold mining
+SPY 16Feb18 P 281,USD,IB Brokers,500,2018-01-24,1.58,6.46,Options,0,SPY,SPY,USA,,,
+SPY 16Feb18 P 281,USD,IB Brokers,-500,2018-01-25,1.9,5.89,Options,0,SPY,SPY,USA,,,
+SPY 24Jan18 P 278,USD,IB Brokers,2000,2018-01-18,0.82,25.43,Options,0,SPY,SPY,USA,,,
+SPY 24Jan18 P 278,USD,IB Brokers,-2000,2018-01-18,1.04,23.52,Options,0,SPY,SPY,USA,,,
+SPY 2Feb18 C 283,USD,IB Brokers,-200,2018-01-24,2.02,1.6,Options,1,SPY,SPY,USA,,,
+SPY 2Feb18 C 283,USD,IB Brokers,200,2018-01-29,3.31,0.84,Options,1,SPY,SPY,USA,,,
+SPY 2Feb18 P 283,USD,IB Brokers,1000,2018-01-19,1.7,7.92,Options,0,SPY,SPY,USA,,,
+SPY 2Feb18 P 283,USD,IB Brokers,-500,2018-01-20,1.58,5.89,Options,0,SPY,SPY,USA,,,
+SPY 2Feb18 P 283,USD,IB Brokers,-500,2018-01-21,2.14,3.99,Options,0,SPY,SPY,USA,,,
+SPY 2Feb18 P 283,USD,IB Brokers,800,2018-01-24,1.75,5.07,Options,0,SPY,SPY,USA,,,
+SPY 2Feb18 P 283,USD,IB Brokers,-500,2018-01-26,2.14,3.99,Options,1,SPY,SPY,USA,,,
+SPY 2Feb18 P 283,USD,IB Brokers,500,2018-01-27,1.69,5.86,Options,1,SPY,SPY,USA,,,
+SPY 2Feb18 P 283,USD,IB Brokers,-800,2018-01-25,1.47,9.34,Options,0,SPY,SPY,USA,,,
+TAO,USD,Keytrade,1,2018-01-03,240.94,,Dividend,,TAO,TAO,,,,
+TBT 9Feb18 C 37,USD,IB Brokers,-400,2018-01-30,0.37,1.7,Options,1,TBT,TBT,USA,,,
+UEC,USD,IB Brokers,2000,2018-01-22,1.6293,8,Stock,0,UEC,UEC,USA,Energy,,Uranium
+WEAT,USD,IB Brokers,800,2018-01-30,6.42,3.3,Stock,0,WEAT,WEAT,USA,Basic Materials,,Agricultural commodity

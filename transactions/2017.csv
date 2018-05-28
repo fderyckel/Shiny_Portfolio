@@ -1,0 +1,51 @@
+ticker,currency,portfolio,quantity,transaction_date,price,commission,instrument_type,is_short,alpha_ticker,saved_as,geography,sector,group,industry
+CAR 19Jan18 P 27.5,USD,IB Brokers,200,2017-07-26,2.72,0.01,Options,0,CAR,CAR,USA,Industrials,Transportation,Trucking
+SLB 19Jan18 P 72.5,USD,IB Brokers,-100,2017-10-05,4.99,0.81,Options,1,SLB,SLB,USA,Energy,Equipment Services,Oil Gas Equipment Services
+GDXJ,USD,IB Brokers,300,2017-11-14,37,0,ETF,0,GDXJ,GDXJ,USA,Basic Materials,Metals & Mining,Gold mining
+SLV 19Jav18 C 18,USD,IB Brokers,5000,2017-11-17,0.08,50.58,Options,0,SLV,SLV,USA,Basic Materials,Metals & Mining,Gold mining
+BIB 19Jan18 P 56,USD,IB Brokers,-200,2017-11-21,4.75,0.01,Options,1,BIB,BIB,USA,Healthcare,Pharmaceuticals Biotech,Biotechnology
+CAR 16Feb18 C 42,USD,IB Brokers,-200,2017-12-04,2.15,3.24,Options,1,CAR,CAR,USA,Industrials,Transportation,Trucking
+COF 19Jan18 C 95,USD,IB Brokers,-200,2017-12-05,3.3,1,Options,1,COF,COF,,Financials,Diversified Financials,Consumer Finance
+GDX,USD,IB Brokers,100,2017-12-15,25,0,ETF,0,GDX,GDX,USA,Basic Materials,Metals & Mining,Gold mining
+TBT,USD,IB Brokers,400,2017-12-15,35,0,ETF,0,TBT,TBT,USA,,,
+GDX 16Feb18 P 25,USD,IB Brokers,-200,2017-12-15,3.2,0.86,Options,1,GDX,GDX,USA,Basic Materials,Metals & Mining,Gold mining
+ABX 16Feb18 P 15,USD,IB Brokers,-400,2017-12-21,0.9,5.14,Options,1,ABX,ABX,USA,Basic Materials,Metals & Mining,Gold mining
+GE 26Jan18 P 17.5,USD,IB Brokers,-500,2017-12-26,0.52,2.47,Options,1,GE,GE,USA,Industrials,Capital Goods,Industrial Conglomerate
+CAD,CAD,IB Brokers,8549.43,2017-12-31,1,,Equity,,,,,,,
+EUR,EUR,IB Brokers,298.41,2017-12-31,1,,Equity,,,,,,,
+USD,USD,IB Brokers,31853.16,2017-12-31,1,,Equity,,,,,,,
+EUR,EUR,Keytrade,1,2017-07-31,0.7,,Equity,,,,,,,
+GGP Jan19 P 19.74,USD,Keytrade,200,2017-08-18,2.8,19.95,Options,0,GGP,GGP,,,,
+EUR,EUR,Keytrade,100000,2017-08-20,1,,Equity,,,,,,,
+BIB,USD,Keytrade,72,2017-08-30,55.776,29.95,ETF,0,BIB,BIB,USA,Healthcare,Pharmaceuticals Biotech,Biotechnology
+USD,EUR,Keytrade,4045.822,2017-09-01,0.843952107,0,Forex,,,,,,,
+COPX,USD,Keytrade,197,2017-09-13,24.99,29.95,ETF,0,COPX,COPX,World,Basic Materials,Metals & Mining,Industrial Metals
+KWEB,USD,Keytrade,85,2017-09-13,58.7,29.95,ETF,0,KWEB,KWEB,China,MSCI A share,,
+SMIN,USD,Keytrade,105,2017-09-13,47.65,29.95,ETF,0,SMIN,SMIN,India,Small Caps,,
+TAO,USD,Keytrade,172,2017-09-13,29.35,29.95,ETF,0,TAO,TAO,China,Real Estate,,
+GM Mar18 P 32,USD,Keytrade,700,2017-09-13,0.65,19.95,Options,0,GM,GM,,,,
+BABA,USD,Keytrade,28,2017-09-13,178.6092,29.95,Stock,0,BABA,BABA,China,Consumer Discretionary,Retailing,Internet Retail
+BIDU,USD,Keytrade,21,2017-09-13,236.34,29.95,Stock,0,BIDU,BIDU,China,Tech,Software Services,
+MELI,USD,Keytrade,17,2017-09-13,290.1,29.95,Stock,0,MELI,MELI,Brazil,Tech,,
+UEC,USD,Keytrade,3500,2017-09-13,1.37,29.95,Stock,0,UEC,UEC,USA,Energy,,
+RUS,EUR,Keytrade,175,2017-09-14,28.2,14.95,ETF,0,RUS.PA,RUS,Russia,LargeCap,,
+USD,EUR,Keytrade,35416.4476,2017-09-14,0.846668202,0,Forex,,,,,,,
+ISJP,EUR,Keytrade,140,2017-09-15,33.5,14.95,ETF,0,ISJP.AS,ISJP,Japan,Small Caps,,
+CS1,EUR,Keytrade,20,2017-09-19,204.28,14.95,ETF,0,CS1.PA,CS1,Spain,,,
+CSKR,EUR,Keytrade,33,2017-09-19,135.16,14.95,ETF,0,CSKR.AS,CSKR,S. Korea,,,
+USD,EUR,Keytrade,579.95,2017-09-20,0.839917234,,Forex,,,,,,,
+USD,EUR,Keytrade,4952.98,2017-09-25,0.839912538,,Forex,,,,,,,
+USD,USD,Keytrade,1,2017-10-03,0.47,,Fees,,,,,,,
+USD,EUR,Keytrade,0.47,2017-10-03,0.85106383,,Forex,,,,,,,
+ESPR,USD,Keytrade,75,2017-10-06,56.35,29.95,Stock,0,ESPR,ESPR,USA,Healthcare,Pharmaceuticals Biotech,Biotechnology
+MOMO,USD,Keytrade,130,2017-10-06,31.9665,29.95,Stock,0,MOMO,MOMO,China,Tech,,
+CHIX,USD,Keytrade,280,2017-10-10,17.57,29.95,ETF,0,CHIX,CHIX,China,Financials,,
+SX6FIN,EUR,Keytrade,85,2017-10-11,58.8,14.95,ETF,0,FIN.PA,FIN.PA,Europe,Financials,,
+USD,EUR,Keytrade,13391.36,2017-10-11,0.852951455,,Forex,,,,,,,
+MELI,USD,Keytrade,1,2017-10-16,2.17,,Dividend,,MELI,MELI,,,,
+FMI,EUR,Keytrade,110,2017-10-19,40.55,14.95,ETF,0,FMI.PA,FMI,Italy,,,
+MOMO,USD,Keytrade,-130,2017-12-05,23.811,29.95,Stock,0,MOMO,MOMO,,,,
+Sanofi,EUR,Keytrade,68,2017-12-06,73.1,29.86,Stock,0,SNW.DE,Sanofi,France,Pharma,,
+CG1,EUR,Keytrade,21,2017-12-11,240.4,24.95,ETF,0,CG1.PA,CG1,Germany,MSCI Germany,,
+KWEB,USD,Keytrade,1,2017-12-27,24.44,,Dividend,,KWEB,KWEB,,,,
+SMIN,USD,Keytrade,1,2017-12-27,41.61,,Dividend,,SMIN,SMIN,India,,,
